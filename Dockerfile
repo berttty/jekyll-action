@@ -18,4 +18,12 @@ COPY LICENSE README.md /
 
 COPY entrypoint.sh /
 
+RUN mkdir -p /.plantuml/
+RUN curl  https://github.com/plantuml/plantuml/releases/download/v1.2021.16/plantuml-1.2021.16.jar -o  /.plantuml/plantuml.jar
+RUN echo "#!/bin/bash" > /.plantuml/plantuml
+RUN echo "java -jar /.plantuml/plantuml.jar \"\$1\" \"\$2\"" >> /.plantuml/plantuml
+RUN chmod +x /.plantuml/plantuml
+RUN ln -s /.plantuml/plantuml /usr/bin/plantuml
+RUN chmod +x /usr/bin/plantuml
+
 ENTRYPOINT ["/entrypoint.sh"]
