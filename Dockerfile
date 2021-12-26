@@ -23,7 +23,10 @@ RUN curl  https://github.com/plantuml/plantuml/releases/download/v1.2021.16/plan
 RUN echo "#!/bin/bash" > /.plantuml/plantuml
 RUN echo "java -jar /.plantuml/plantuml.jar \"\$1\" \"\$2\"" >> /.plantuml/plantuml
 RUN chmod +x /.plantuml/plantuml
-RUN ln -s /.plantuml/plantuml /usr/bin/plantuml
-RUN chmod +x /usr/bin/plantuml
+ENV PATH="/.plantuml/:${PATH}"
+#RUN ln -s /.plantuml/plantuml /usr/bin/plantuml
+#RUN chmod +x /usr/bin/plantuml
+
+
 
 ENTRYPOINT ["/entrypoint.sh"]
