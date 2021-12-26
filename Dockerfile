@@ -1,5 +1,7 @@
 FROM ruby:2.7-alpine
 
+ARG PLANTUML_VERSION=1.2021.16
+
 LABEL version="2.0.1"
 LABEL repository="https://github.com/helaili/jekyll-action"
 LABEL homepage="https://github.com/helaili/jekyll-action"
@@ -20,13 +22,15 @@ COPY LICENSE README.md /
 
 COPY entrypoint.sh /
 
-RUN mkdir -p /.plantuml/
-RUN curl https://github.com/plantuml/plantuml/releases/download/v1.2021.16/plantuml-1.2021.16.jar -o /.plantuml/plantuml.jar -s -L
-RUN echo "#!/bin/sh" > /.plantuml/plantuml
-RUN echo "java -jar /.plantuml/plantuml.jar \"\$1\" \"\$2\"" >> /.plantuml/plantuml
-RUN chmod +x /.plantuml/plantuml
-ENV PATH="/.plantuml/:${PATH}"
-RUN ln -s /.plantuml/plantuml /bin/plantuml
+RUN apk add --virtual planuml-deps --no-cache graphviz ttf-droid ttf-droid-nonlatin curl \
+    && mkdir /plantuml \
+    && curl -L https://sourceforge.net/projects/plantuml/files/plantuml.${PLANTUML_VERSION}.jar/download -o /plantuml/plantuml.jar
+
+COPY plantuml /plantuml
+
+RUN chmod +x /plantuml/plantuml
+ENV PATH="/plantuml/:${PATH}"
+RUN ln -s /plantuml/plantuml /bin/plantuml
 RUN chmod +x /bin/plantuml
 
 
